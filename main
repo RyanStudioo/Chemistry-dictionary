@@ -1,0 +1,250 @@
+# code here is really bad, one of the first projects I ever did while learning python
+
+config_list = []
+elements_database = ['Hydrogen (H)', 'Helium (He)', 'Lithium (Li)', "Berylium (Be)", 'Boron (B)', 'Carbon (C)',
+                     'Nitrogen (N)', 'Oxygen (O)', 'Flourine (F)', 'Neon (Ne)', 'Sodium (Na)', 'Magnesium (Mg)',
+                     'Aluminuim (Al)', 'Silicon (Si)', 'Phosphorus (P)', 'Sulfur (S)', 'Chlorine (Cl)', 'Argon (Ar)',
+                     'Potassium (K)', 'Calcium (Ca)', 'Scandium (Sc)', 'Titanium (Ti)', 'Vanadium (V)', 'Chromium (Cr)',
+                     'Manganese (Mn)', 'Iron (Fe)', 'Cobalt (Co)', 'Nickel (Ni)', 'Copper (Cu)', 'Zinc (Zn)',
+                     'Gallium (Ga)', 'Germanium (Ge)', 'Arsenic (As)', 'Selenium (Se)', 'Bromine (Br)', 'Krypton (Kr)',
+                     'Rubidium (Rb)', 'Strontium (Sr)', 'Yttrium (Y)', 'Zirconium (Zr)', 'Niobium (Nb)',
+                     'Molybdenum (Mo)', 'Technetium (Tc)', 'Ruthenium (Ru)', 'Rhodium (Rh)', 'Palladium (Pd)',
+                     ' Silver (Ag)', 'Cadmium (Cd)', 'Indium (In)', 'Tin (Sn)', 'Antimony (Sb)', 'Tellurium (Te)',
+                     'Iodine (I)', 'Xenon (Xe)']
+config_re = 0
+
+
+def calculations():
+    global atomic_number
+    global row
+    global column
+    global valence
+    atomic_number = sum(config_list)
+    row = len(config_list)
+    column = config_list[len(config_list) - 1]
+    if row < 4 and column > 2:
+        column += 10
+    if atomic_number == 1:
+        column = 1
+    if atomic_number == 2:
+        column = 18
+    valence = config_list[len(config_list) - 1]
+
+
+def infoprint():
+    print("-----")
+    print("Electronic Configuration:", config_list)
+    print("Atomic Number:", atomic_number)
+    print("Valence Electron:", valence)
+    print("Column:", column)
+    print("Row:", row)
+    print("Element is:", elements_database[atomic_number - 1])
+    print("-----")
+
+
+def invalidconfig(n):
+    global config_re
+    global config
+    global config_list
+    config_re = 0
+    config = 0
+    config_list = []
+    if n == 0:
+        print("Invalid Configuration, Electron Shell Limit Exceeded!")
+
+
+def elementproperties():
+    if column == 1 and atomic_number != 1:
+        print("This Element Is An Alkali Metal")
+    if column == 2:
+        print("This Element Is An Alkali Earth Metal")
+    if column >= 3 and column <= 12:
+        print("This Element Is A Transitional Metal")
+    if column == 17:
+        print("This Element Is A Halogen")
+    if column == 18:
+        print("This Element Is A Noble Gas")
+
+
+while True:
+    print("Input Option: Electronic Configuration (1), Atomic Number (2), Element Name (3), Mole Calculations (4)")
+    choice = int(input("What function would you like to perform?: "))
+    if choice == 1:
+        while True:
+            config_re += 1
+            if config_re == 6:
+                break
+            config = input(f"Enter electronic config of shell {config_re}: ")
+            if not config.isdigit() and config != '':
+                config_re -= 1
+                print('Only numbers allowed')
+                continue
+            if config == '':
+                break
+            config = int(config)
+            config_list.append(config)
+            if config_re >= 1 and config < 2:
+                break
+            if config_re >= 2 and config < 8:
+                break
+            if config_re >= 4 and config < 18:
+                break
+            if config_re == 1 and config > 2:
+                invalidconfig(0)
+                continue
+            if config_re >= 2 and config_re < 4:
+                if config > 8:
+                    invalidconfig(0)
+                    continue
+            if config_re >= 4 and config > 18:
+                invalidconfig(0)
+                continue
+        calculations()
+        infoprint()
+        elementproperties()
+        invalidconfig(1)
+
+    if choice == 2 or choice == 3:
+        while True:
+            if choice == 2:
+                atomic_number = int(input("Input Atomic Number: "))
+            elif choice == 3:
+                print("Input format: Element_name (Symbol)")
+                element = input("Input Your Element: ")
+                atomic_number = elements_database.index(element) + 1
+            r1check = atomic_number - 2
+            if r1check <= 0:
+                config_list.append(atomic_number)
+                break
+            else:
+                config_list.append(2)
+            r2check = r1check - 8
+            if r2check <= 0:
+                config_list.append(r1check)
+                break
+            else:
+                config_list.append(8)
+            r3check = r2check - 8
+            if r3check <= 0:
+                config_list.append(r2check)
+                break
+            else:
+                config_list.append(8)
+            r4check = r3check - 18
+            if r4check <= 0:
+                config_list.append(r3check)
+                break
+            else:
+                config_list.append(18)
+            r5check = r4check - 18
+            if r5check <= 0:
+                config_list.append(r4check)
+                break
+            else:
+                invalidconfig(0)
+                break
+            for i in config_list:
+                if i <= 0:
+                    config_list.pop()
+        calculations()
+        infoprint()
+        elementproperties()
+        invalidconfig(1)
+    if choice == 4:
+        while True:
+            state = int(input("Matter State? (Solid - 1, Liquid - 2, Gas - 3): "))
+            if state == 1:
+                print('---')
+                print("Percentage Yield - (1), Pencentage Purity - (2)")
+                solid_choice = int(input("What type of calculation are you performing?: "))
+                print("---")
+                if solid_choice == 1:
+                    print("Input all know values, and leave unknowns blank")
+                    actual_yield = input("Actual Yield?(mass in g): ")
+                    theory_yield = input("Theoratically maximum yield?(molar mass in g): ")
+                    percent_yield = input("Percentage Yield?: ")
+
+                    if actual_yield == '':
+                        actual_yield = (int(percent_yield) * int(theory_yield)) / 100
+                        print('Actual Yield:', str(actual_yield) + 'g')
+                    elif theory_yield == '':
+                        theory_yield = (100 * int(actual_yield) / int(percent_yield))
+                        print('Theoratical Yield:', str(theory_yield) + 'g')
+                    elif percent_yield == '':
+                        percent_yield = (int(actual_yield) / int(theory_yield) * 100)
+                        print('Percent Yield:', str(percent_yield) + '%')
+                    else:
+                        print('Error')
+                        continue
+                if solid_choice == 2:
+                    print("Input all know values, and leave unknowns blank")
+                    actual_yield = input("Mass of pure substance?(mass in g): ")
+                    theory_yield = input("Total Mass?(molar mass in g): ")
+                    percent_yield = input("Percentage Purity?: ")
+
+                    if actual_yield == '':
+                        actual_yield = (int(percent_yield) * int(theory_yield)) / 100
+                        print('Mass of pure substance:', str(actual_yield) + 'g')
+                    elif theory_yield == '':
+                        theory_yield = (100 * int(actual_yield) / int(percent_yield))
+                        print('Total Mass:', str(theory_yield) + 'g')
+                    elif percent_yield == '':
+                        percent_yield = (int(actual_yield) / int(theory_yield) * 100)
+                        print('Percentage Purity:', str(percent_yield) + '%')
+                    else:
+                        print('Error')
+                        continue
+
+            if state == 2:
+                print('---')
+                print('Number of Moles - (1), Mass in G - (2), Molar Mass in g/mol - (3)')
+                liq_state = int(input('What would you like to find?: '))
+                print('---')
+                if liq_state == 1:
+                    print(
+                        'Molar mass (g/mol) and Mass in g - (1), Concentration in mol/cm3 and volume of solution in cm3 - (2)')
+                    no_mole_eqn = int(input('What values do you have currently?: '))
+                    print('---')
+                    if no_mole_eqn == 1:
+                        molmass = int(input('Molar mass (g/mol): '))
+                        gmass = int(input('Mass(g): '))
+                        no_mole = gmass / molmass
+                        print(no_mole)
+                    if no_mole_eqn == 2:
+                        mol_con = int(input('Concentration in mol/cm3: '))
+                        vol = int(input('Volume of solution: '))
+                        no_mole = mol_con * vol
+                        print(no_mole)
+
+                if liq_state == 2:
+                    print(
+                        'Number of moles and molar mass (g/mol) - (1), Concentration in g/cm3 and volume of solvent in cm3 - (2)')
+                    mass_eqn = int(input('What values do you currently have?: '))
+                    if mass_eqn == 1:
+                        molmass = int(input('Molar mass (g/mol): '))
+                        no_mol = int(input('Number of Moles: '))
+                        gmass = gmass * no_mol
+                        print(gmass)
+                    if mass_eqn == 2:
+                        concen = int(input('Concentration in g/cm3: '))
+                        volume = int(input('Volume in cm3: '))
+                        gmass = concen * volume
+                        print(gmass)
+                if liq_state == 3:
+                    gmass = int(input('Mass in g: '))
+                    no_mol = int(input('Number of Moles: '))
+                    molmass = gmass / no_mol
+                    print(molmass)
+
+            if state == 3:
+                print('Leave the unknown values blank')
+                gas_vol = input('Volume of Gas in dm3: ')
+                no_mol = input('Number of moles: ')
+                if gas_vol == '':
+                    gas_vol = no_mol * 24
+                    print('Volume of Gas in dm3:', gas_vol)
+                elif no_mol == '':
+                    no_mol = gas_vol / 24
+                    print('Number of Moles:', no_mol)
+                else:
+                    print('Error')
